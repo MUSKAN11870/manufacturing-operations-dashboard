@@ -1,0 +1,26 @@
+product_id,product_name,category,unit_price,reorder_level
+P001,Football Gloves,Footwear,3077,22
+P002,Leather Jacket,Equipment,2241,22
+P003,Sports Shoes,Footwear,4589,29
+P004,Cricket Bat,Leather,3741,24
+P005,Football,Footwear,4258,26
+P006,Cricket Gloves,Footwear,1670,18
+P007,Leather Wallet,Leather,2669,27
+P008,Sports Bag,Footwear,1643,10
+P009,Running Shoes,Sportswear,2520,13
+P010,Football Jersey,Leather,4915,27
+P011,Cricket Helmet,Leather,2652,18
+P012,Leather Belt,Leather,4009,30
+P013,Training Shorts,Equipment,3771,20
+P014,Goalkeeper Gloves,Equipment,3465,13
+P015,Tennis Racket,Footwear,2296,19
+P016,Sports Socks,Leather,1633,23
+P017,Leather Boots,Footwear,4674,15
+P018,Basketball,Sportswear,4542,24
+P019,Basketball Jersey,Leather,1244,10
+P020,Gym Gloves,Sportswear,885,18
+P021,Track Pants,Footwear,1398,26
+P022,Leather Ball,Equipment,1752,15
+P023,Sports Cap,Footwear,1810,26
+P024,Hockey Stick,Sportswear,3958,13
+P025,Training T-Shirt,Leather,1020,30
