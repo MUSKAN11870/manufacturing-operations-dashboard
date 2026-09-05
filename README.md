@@ -7,6 +7,7 @@ A manufacturing analytics dashboard built to monitor orders, production, invento
 This project simulates a real-world manufacturing analytics system where operational data is stored in a relational SQLite database and analyzed using Python, Pandas, SQL, and Streamlit.
 
 The dashboard helps identify operational issues and provides business insights through interactive analytics.
+![Dashboard Screenshot](screenshots/dashboard.png)
 
 ## Features
 
@@ -81,3 +82,9 @@ manufacturing_dashboard/
 │
 ├── README.md
 └── requirements.txt
+
+## How to Run Locally
+
+1. Clone this repository
+2. Install dependencies: `pip install -r requirements.txt`
+3. Run the app: `streamlit run dashboard/app.py`
