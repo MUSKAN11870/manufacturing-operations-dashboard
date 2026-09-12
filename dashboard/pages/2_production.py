@@ -12,6 +12,37 @@ production = pd.read_sql_query(
 )
 
 st.title("🏭 Production")
+import uuid
+
+st.subheader("➕ Add New Production Entry")
+with st.form("add_production_form", clear_on_submit=True):
+    order_id = st.text_input("Order ID")
+    production_date = st.date_input("Production Date")
+    quantity_produced = st.number_input("Quantity Produced", min_value=0, step=1)
+    defective_quantity = st.number_input("Defective Quantity", min_value=0, step=1)
+    production_status = st.selectbox("Status", ["Completed", "In Progress", "Delayed"])
+    submitted = st.form_submit_button("Add Entry")
+
+    if submitted:
+        new_id = "PRD-" + uuid.uuid4().hex[:8]
+        conn2 = sqlite3.connect("database/manufacturing.db")
+        conn2.execute(
+            "INSERT INTO production (production_id, order_id, production_date, quantity_produced, defective_quantity, production_status, source) VALUES (?, ?, ?, ?, ?, ?, 'real')",
+            (new_id, order_id, str(production_date), quantity_produced, defective_quantity, production_status)
+        )
+        conn2.commit()
+        conn2.close()
+        st.success(f"Production entry {new_id} added!")
+        st.rerun()
+
+with st.expander("🧹 Manage example data"):
+    if st.button("Delete all example production entries"):
+        conn3 = sqlite3.connect("database/manufacturing.db")
+        conn3.execute("DELETE FROM production WHERE source = 'example'")
+        conn3.commit()
+        conn3.close()
+        st.success("Example production entries cleared.")
+        st.rerun()
 
 total_produced = production["quantity_produced"].sum()
 total_defects = production["defective_quantity"].sum()
