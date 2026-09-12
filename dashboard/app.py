@@ -389,7 +389,7 @@ with chart2:
 # LOW STOCK PRODUCTS
 # ==================================================
 
-st.subheader("📦 Inventory Requiring Attention")
+st.subheader("📦 Stock Requiring Attention")
 
 
 inventory_check = inventory.merge(
@@ -426,7 +426,7 @@ inventory_attention = inventory_check[
 if len(inventory_attention) == 0:
 
     st.success(
-        "✅ No inventory issues."
+        "✅ No stock issues."
     )
 
 else:

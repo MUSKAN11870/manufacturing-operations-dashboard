@@ -34,7 +34,7 @@ inventory["stock_status"] = inventory.apply(
     axis=1
 )
 
-st.title("📦 Inventory")
+st.title("📦 stock")
 
 st.subheader("📊 Stock Status")
 
