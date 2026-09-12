@@ -71,6 +71,36 @@ analysis["defect_rate"] = (
 ).fillna(0)
 
 st.title("📊 Products")
+import uuid
+
+st.subheader("➕ Add New Product")
+with st.form("add_product_form", clear_on_submit=True):
+    product_id = st.text_input("Product ID (e.g. ball1, bat2 — use this exact ID in Orders/Production/Stock)")
+    product_name = st.text_input("Product Name")
+    category = st.text_input("Category")
+    unit_price = st.number_input("Unit Price", min_value=0, step=1)
+    reorder_level = st.number_input("Reorder Level", min_value=0, step=1)
+    submitted = st.form_submit_button("Add Product")
+
+    if submitted:
+        conn2 = sqlite3.connect("database/manufacturing.db")
+        conn2.execute(
+            "INSERT INTO products (product_id, product_name, category, unit_price, reorder_level, source) VALUES (?, ?, ?, ?, ?, 'real')",
+            (product_id, product_name, category, unit_price, reorder_level)
+        )
+        conn2.commit()
+        conn2.close()
+        st.success(f"Product '{product_name}' added with ID {product_id}!")
+        st.rerun()
+
+with st.expander("🧹 Manage example data"):
+    if st.button("Delete all example products"):
+        conn3 = sqlite3.connect("database/manufacturing.db")
+        conn3.execute("DELETE FROM products WHERE source = 'example'")
+        conn3.commit()
+        conn3.close()
+        st.success("Example products cleared.")
+        st.rerun()
 
 st.subheader("Product Performance")
 
