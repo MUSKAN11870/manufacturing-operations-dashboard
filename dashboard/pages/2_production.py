@@ -15,8 +15,13 @@ st.title("🏭 Production")
 import uuid
 
 st.subheader("➕ Add New Production Entry")
+
+conn_lookup = sqlite3.connect("database/manufacturing.db")
+orders_list = pd.read_sql_query("SELECT order_id FROM orders", conn_lookup)
+conn_lookup.close()
+
 with st.form("add_production_form", clear_on_submit=True):
-    order_id = st.text_input("Order ID")
+    order_choice = st.selectbox("Order ID", orders_list["order_id"])
     production_date = st.date_input("Production Date")
     quantity_produced = st.number_input("Quantity Produced", min_value=0, step=1)
     defective_quantity = st.number_input("Defective Quantity", min_value=0, step=1)
@@ -28,7 +33,7 @@ with st.form("add_production_form", clear_on_submit=True):
         conn2 = sqlite3.connect("database/manufacturing.db")
         conn2.execute(
             "INSERT INTO production (production_id, order_id, production_date, quantity_produced, defective_quantity, production_status, source) VALUES (?, ?, ?, ?, ?, ?, 'real')",
-            (new_id, order_id, str(production_date), quantity_produced, defective_quantity, production_status)
+            (new_id, order_choice, str(production_date), quantity_produced, defective_quantity, production_status)
         )
         conn2.commit()
         conn2.close()
@@ -36,7 +41,8 @@ with st.form("add_production_form", clear_on_submit=True):
         st.rerun()
 
 with st.expander("🧹 Manage example data"):
-    if st.button("Delete all example production entries"):
+    confirm = st.checkbox("Yes, I'm sure I want to delete example production entries")
+    if st.button("Delete all example production entries") and confirm:
         conn3 = sqlite3.connect("database/manufacturing.db")
         conn3.execute("DELETE FROM production WHERE source = 'example'")
         conn3.commit()
@@ -44,6 +50,8 @@ with st.expander("🧹 Manage example data"):
         st.success("Example production entries cleared.")
         st.rerun()
 
+st.subheader("🔍 Search Production")
+search_term = st.text_input("Search by order or status")
 total_produced = production["quantity_produced"].sum()
 total_defects = production["defective_quantity"].sum()
 
@@ -72,10 +80,13 @@ st.line_chart(trend)
 
 st.subheader("📋 Production Records")
 
-st.dataframe(
-    production,
-    use_container_width=True,
-    hide_index=True
-)
+if search_term:
+    filtered_production = production[
+        production.apply(lambda row: search_term.lower() in str(row).lower(), axis=1)
+    ]
+else:
+    filtered_production = production
+
+st.dataframe(filtered_production, use_container_width=True, hide_index=True)
 
 conn.close()
