@@ -12,6 +12,8 @@ orders["order_date"] = pd.to_datetime(orders["order_date"])
 orders["due_date"] = pd.to_datetime(orders["due_date"])
 
 st.title("📦 Orders")
+st.subheader("🔍 Search Orders")
+search_term = st.text_input("Search by customer, product, or status")
 import uuid
 
 st.subheader("➕ Add New Order")
