@@ -15,9 +15,15 @@ st.title("📦 Orders")
 import uuid
 
 st.subheader("➕ Add New Order")
+
+conn_lookup = sqlite3.connect("database/manufacturing.db")
+customers_list = pd.read_sql_query("SELECT customer_id, customer_name FROM customers", conn_lookup)
+products_list = pd.read_sql_query("SELECT product_id, product_name FROM products", conn_lookup)
+conn_lookup.close()
+
 with st.form("add_order_form", clear_on_submit=True):
-    customer_id = st.text_input("Customer ID")
-    product_id = st.text_input("Product ID")
+    customer_choice = st.selectbox("Customer", customers_list["customer_name"])
+    product_choice = st.selectbox("Product", products_list["product_name"])
     order_date = st.date_input("Order Date")
     due_date = st.date_input("Due Date")
     quantity = st.number_input("Quantity", min_value=1, step=1)
@@ -25,6 +31,8 @@ with st.form("add_order_form", clear_on_submit=True):
     submitted = st.form_submit_button("Add Order")
 
     if submitted:
+        customer_id = customers_list[customers_list["customer_name"] == customer_choice]["customer_id"].values[0]
+        product_id = products_list[products_list["product_name"] == product_choice]["product_id"].values[0]
         new_id = "ORD-" + uuid.uuid4().hex[:8]
         conn2 = sqlite3.connect("database/manufacturing.db")
         conn2.execute(
@@ -33,17 +41,22 @@ with st.form("add_order_form", clear_on_submit=True):
         )
         conn2.commit()
         conn2.close()
-        st.success(f"Order {new_id} added!")
+        st.success(f"Order {new_id} added for {customer_choice} - {product_choice}!")
         st.rerun()
 
 with st.expander("🧹 Manage example data"):
-    if st.button("Delete all example orders"):
+    confirm = st.checkbox("Yes, I'm sure I want to delete example orders")
+    if st.button("Delete all example orders") and confirm:
         conn3 = sqlite3.connect("database/manufacturing.db")
         conn3.execute("DELETE FROM orders WHERE source = 'example'")
         conn3.commit()
         conn3.close()
         st.success("Example orders cleared.")
         st.rerun()
+
+st.subheader("🔍 Search Orders")
+search_term = st.text_input("Search by customer, product, or status")
+
 
 st.metric("Total Orders", len(orders))
 
@@ -64,8 +77,15 @@ st.dataframe(
 
 st.subheader("📋 All Orders")
 
+if search_term:
+    filtered_orders = orders[
+        orders.apply(lambda row: search_term.lower() in str(row).lower(), axis=1)
+    ]
+else:
+    filtered_orders = orders
+
 st.dataframe(
-    orders,
+    filtered_orders,
     use_container_width=True,
     hide_index=True
 )
