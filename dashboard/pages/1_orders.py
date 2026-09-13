@@ -6,7 +6,15 @@ st.set_page_config(page_title="Orders", page_icon="📦", layout="wide")
 
 conn = sqlite3.connect("database/manufacturing.db")
 
-orders = pd.read_sql_query("SELECT * FROM orders", conn)
+orders = pd.read_sql_query(
+    """
+    SELECT o.*, c.customer_name, p.product_name
+    FROM orders o
+    LEFT JOIN customers c ON o.customer_id = c.customer_id
+    LEFT JOIN products p ON o.product_id = p.product_id
+    """,
+    conn
+)
 
 orders["order_date"] = pd.to_datetime(orders["order_date"])
 orders["due_date"] = pd.to_datetime(orders["due_date"])
@@ -15,9 +23,18 @@ st.title("📦 Orders")
 st.info("📌 Before adding an order: 1) Add the product on the Products page, 2) Add the customer on the Customers page, 3) Then come here to place the order.")
 st.subheader("🔍 Search Orders")
 search_term = st.text_input("Search by customer, product, or status")
+
 if search_term:
     conn_search = sqlite3.connect("database/manufacturing.db")
-    search_results = pd.read_sql_query("SELECT * FROM orders", conn_search)
+    search_results = pd.read_sql_query(
+        """
+        SELECT o.*, c.customer_name, p.product_name
+        FROM orders o
+        LEFT JOIN customers c ON o.customer_id = c.customer_id
+        LEFT JOIN products p ON o.product_id = p.product_id
+        """,
+        conn_search
+    )
     conn_search.close()
     search_results = search_results[
         search_results.apply(lambda row: search_term.lower() in str(row).lower(), axis=1)
