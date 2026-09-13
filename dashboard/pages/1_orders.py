@@ -12,8 +12,18 @@ orders["order_date"] = pd.to_datetime(orders["order_date"])
 orders["due_date"] = pd.to_datetime(orders["due_date"])
 
 st.title("📦 Orders")
+st.info("📌 Before adding an order: 1) Add the product on the Products page, 2) Add the customer on the Customers page, 3) Then come here to place the order.")
 st.subheader("🔍 Search Orders")
 search_term = st.text_input("Search by customer, product, or status")
+if search_term:
+    conn_search = sqlite3.connect("database/manufacturing.db")
+    search_results = pd.read_sql_query("SELECT * FROM orders", conn_search)
+    conn_search.close()
+    search_results = search_results[
+        search_results.apply(lambda row: search_term.lower() in str(row).lower(), axis=1)
+    ]
+    st.write(f"Found {len(search_results)} matching order(s):")
+    st.dataframe(search_results, use_container_width=True, hide_index=True)
 import uuid
 
 st.subheader("➕ Add New Order")
