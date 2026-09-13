@@ -56,9 +56,6 @@ with st.expander("🧹 Manage example data"):
         st.success("Example orders cleared.")
         st.rerun()
 
-st.subheader("🔍 Search Orders")
-search_term = st.text_input("Search by customer, product, or status")
-
 
 st.metric("Total Orders", len(orders))
 
