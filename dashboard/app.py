@@ -1,7 +1,11 @@
 import streamlit as st
 import pandas as pd
 import sqlite3
-
+with st.sidebar:
+    st.markdown("---")
+    st.markdown("### 💼 Want this for your business?")
+    st.markdown("I can customize this dashboard for your factory's needs.")
+    st.markdown("📧 Contact: **muskan431107@gmail.com**")
 
 # ==================================================
 # PAGE CONFIGURATION
